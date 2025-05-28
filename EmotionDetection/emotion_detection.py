@@ -22,8 +22,22 @@ def emotion_detector(text_to_analyse):
     # Call to the Watson NLP API to perform the emotion analysis on text_to_analyse
     response = requests.post(url, json = payload, headers=headers)  
 
+
     # Parsing of the API response
     formatted_response = json.loads(response.text)
+
+    # Management of invalid API request
+    if response.status_code == 400:
+        # Formatting of the JSON response
+        emotions = {
+            "anger": None,
+            "disgust": None,
+            "fear": None,
+            "joy": None,
+            "sadness": None,
+            "dominant_emotion": None
+        }
+        return emotions
 
     # Formatting of the JSON response
     emotions = {
@@ -36,6 +50,8 @@ def emotion_detector(text_to_analyse):
 
     dominant_emotion = max(emotions, key=emotions.get)
     emotions["dominant_emotion"] = dominant_emotion
+
+
 
     # Return the response text from the API
     return emotions  
